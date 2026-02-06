@@ -14,6 +14,12 @@ TokenTotem is your friendly guardian spirit for LLM spend and limits. It lives i
 - Python 3
 - Admin API keys for OpenAI and Anthropic (billing endpoints)
 
+## Optional dev tooling (uv)
+If you want a modern Python workflow, use `uv`:
+1. `uv venv`
+2. `uv sync --dev`
+3. `uv run ruff check bin/tokentotem.30m.py`
+
 ## Install
 1. Install SwiftBar.
 2. Copy the plugin script into your SwiftBar plugins folder:

@@ -1,0 +1,15 @@
+[project]
+name = "tokentotem"
+version = "0.1.0"
+description = "SwiftBar plugin to track LLM spend and limits"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "Unlicense" }
+
+[dependency-groups]
+dev = [
+  "ruff>=0.6.0",
+]
+
+[tool.ruff]
+line-length = 100
