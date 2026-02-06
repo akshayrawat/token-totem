@@ -18,6 +18,7 @@ ACCOUNT_OPENAI = "openai_admin"
 SERVICE_ANTHROPIC = "tokentotem.anthropic.admin"
 ACCOUNT_ANTHROPIC = "anthropic_admin"
 
+# Local config + cache live outside the repo.
 CONFIG_DIR = os.path.expanduser("~/.config/tokentotem")
 CONFIG_PATH = os.path.join(CONFIG_DIR, "config.json")
 CACHE_DIR = os.path.expanduser("~/.cache/tokentotem")
@@ -108,6 +109,7 @@ def save_cache(cache):
 
 
 def keychain_get(service, account):
+    # Read from macOS Keychain using the security CLI.
     try:
         result = subprocess.run(
             [
@@ -129,6 +131,7 @@ def keychain_get(service, account):
 
 
 def keychain_set(service, account, value):
+    # Store/overwrite entry in Keychain.
     subprocess.run(
         [
             "security",
@@ -173,6 +176,7 @@ def osascript_notify(message, title):
 
 
 def http_get_json(url, headers):
+    # Shared JSON fetch with basic error handling.
     req = urllib.request.Request(url, headers=headers)
     try:
         with urllib.request.urlopen(req, timeout=20) as resp:
@@ -250,6 +254,7 @@ def parse_anthropic_rate_limits(headers):
 
 
 def fetch_openai_costs(admin_key, start, end, project_ids):
+    # OpenAI org cost endpoint returns daily buckets.
     params = {
         "start_time": int(start.timestamp()),
         "end_time": int(end.timestamp()),
@@ -292,6 +297,7 @@ def fetch_openai_costs(admin_key, start, end, project_ids):
 
 
 def fetch_anthropic_costs(admin_key, start, end):
+    # Anthropic cost report returns daily buckets in cents.
     params = {
         "starting_at": to_rfc3339(start),
         "ending_at": to_rfc3339(end),
@@ -401,6 +407,7 @@ def format_rate_limits_anthropic(rate_limits, manual):
 
 
 def update_budget_notifications(total_mtd, config, cache):
+    # Fire notifications only when crossing new thresholds.
     budget = config.get("monthly_budget_usd")
     if not budget:
         return cache
@@ -499,6 +506,7 @@ def open_config_file():
 
 
 def render_menu():
+    # Main SwiftBar output: title line + menu items.
     config = load_config()
     cache = load_cache()
     now = utc_now()
