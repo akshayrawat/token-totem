@@ -17,11 +17,11 @@ TokenTotem is your friendly guardian spirit for LLM spend and limits. It lives i
 
 ### Install
 1. Install SwiftBar.
-2. Copy `bin/tokentotem.30m.py` to `~/Library/Application Support/SwiftBar/Plugins/`.
+2. Copy `bin/tokentotem.py` to `~/Library/Application Support/SwiftBar/Plugins/`.
 3. Make it executable:
-   - `chmod +x ~/Library/Application\ Support/SwiftBar/Plugins/tokentotem.30m.py`
+   - `chmod +x ~/Library/Application\ Support/SwiftBar/Plugins/tokentotem.py`
 
-SwiftBar will auto-load the plugin (refresh interval is 30 minutes based on the filename).
+SwiftBar will auto-load the plugin. Use the in-menu "Refresh now" action when you want an update.
 
 ### First-time setup
 Use the menu actions to set:
@@ -48,11 +48,11 @@ Non-secret config lives at `~/.config/tokentotem/config.json`. Example: `docs/co
 ```
 uv venv
 uv sync --dev
-uv run ruff check bin/tokentotem.30m.py
+uv run ruff check bin/tokentotem.py
 ```
 
 ### Files to know
-- Plugin: `bin/tokentotem.30m.py`
+- Plugin: `bin/tokentotem.py`
 - Docs: `docs/`
 - Config: `~/.config/tokentotem/config.json`
 - Cache: `~/.cache/tokentotem/cache.json`

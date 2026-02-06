@@ -1,14 +1,14 @@
 # Codex Instructions (TokenTotem)
 
 ## Quick overview
-- SwiftBar plugin: `bin/tokentotem.30m.py`
+- SwiftBar plugin: `bin/tokentotem.py`
 - Config: `~/.config/tokentotem/config.json`
 - Cache: `~/.cache/tokentotem/cache.json`
 - Docs: `README.md`, `docs/`
 
 ## How to run locally
-- Menu bar output (debug): `python3 bin/tokentotem.30m.py`
-- Run ruff: `uv run ruff check bin/tokentotem.30m.py`
+- Menu bar output (debug): `python3 bin/tokentotem.py`
+- Run ruff: `uv run ruff check bin/tokentotem.py`
 
 ## Keychain entries
 - OpenAI admin key: service `tokentotem.openai.admin`, account `openai_admin`
@@ -26,7 +26,7 @@
 
 ## Common tasks
 - Add a new provider: extend `DEFAULT_CONFIG`, add fetch + render block, and update README.
-- Change refresh interval: rename the file (e.g. `tokentotem.10m.py`).
+- Refresh behavior: rely on the in-menu "Refresh now" action (no filename-based interval).
 - Update docs: keep README install/setup in sync with actual menu actions.
 
 ## Notes
