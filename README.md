@@ -79,3 +79,6 @@ uv run ruff check bin/tokentotem.py
 - Docs: `docs/`
 - Config: `~/.config/tokentotem/config.json`
 - Cache: `~/.cache/tokentotem/cache.json`
+
+## Credits
+Shipped by Codex.
