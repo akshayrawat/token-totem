@@ -3,6 +3,7 @@
 TokenTotem is a macOS menu bar plugin that keeps an eye on OpenAI and Anthropic spend so you do not get surprised by costs.
 
 ## Screenshot
+Screenshot updated: 2026-02-06
 ![TokenTotem menu bar screenshot](docs/screenshot.png?v=20260206)
 
 ## Quick start (5 minutes)
