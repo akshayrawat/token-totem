@@ -7,16 +7,17 @@ Screenshot updated: 2026-02-06
 ![TokenTotem menu bar screenshot](docs/screenshot.png?v=20260206)
 
 ## Quick start (5 minutes)
-1. Install SwiftBar.
-2. Copy the plugin:
-   - `cp bin/tokentotem.py ~/Library/Application\ Support/SwiftBar/Plugins/`
+1. Install SwiftBar. On first launch, it will ask you to choose a Plugins folder. Note that path.
+2. Copy the plugin into the Plugins folder you selected:
+   - Example default path: `~/Library/Application\ Support/SwiftBar/Plugins/`
+   - `cp bin/tokentotem.py <your SwiftBar Plugins folder>/`
 3. Make it executable:
-   - `chmod +x ~/Library/Application\ Support/SwiftBar/Plugins/tokentotem.py`
+   - `chmod +x <your SwiftBar Plugins folder>/tokentotem.py`
 4. Open SwiftBar (or restart it if it is already running).
 5. In the menu, use the actions to set your keys and budget.
 6. Click "Refresh now" in the menu to pull fresh data.
 
-SwiftBar auto-loads the plugin once it is in the Plugins folder. TokenTotem relies on the in-menu "Refresh now" action (no filename-based interval).
+SwiftBar auto-loads the plugin once it is in the Plugins folder you chose. TokenTotem relies on the in-menu "Refresh now" action (no filename-based interval).
 
 ## What you get
 - Today (UTC) spend
@@ -58,8 +59,8 @@ In the menu, set:
 See `docs/troubleshooting.md`.
 
 ## Uninstall
-1. Remove the plugin file from SwiftBar:
-   - `rm ~/Library/Application\ Support/SwiftBar/Plugins/tokentotem.py`
+1. Remove the plugin file from your SwiftBar Plugins folder:
+   - `rm <your SwiftBar Plugins folder>/tokentotem.py`
 2. (Optional) Remove config and cache:
    - `rm ~/.config/tokentotem/config.json`
    - `rm ~/.cache/tokentotem/cache.json`
