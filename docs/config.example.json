@@ -1,0 +1,25 @@
+{
+  "monthly_budget_usd": 200,
+  "warning_thresholds": [0.5, 0.8, 0.95],
+  "providers": {
+    "openai": {
+      "enabled": true,
+      "project_ids": []
+    },
+    "anthropic": {
+      "enabled": true
+    }
+  },
+  "rate_limits": {
+    "openai": {
+      "requests_per_minute": 60,
+      "tokens_per_minute": 90000
+    },
+    "anthropic": {
+      "requests_per_minute": 60,
+      "input_tokens_per_minute": 60000,
+      "output_tokens_per_minute": 20000
+    }
+  },
+  "currency": "USD"
+}
