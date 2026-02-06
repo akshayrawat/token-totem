@@ -603,6 +603,9 @@ def render_menu():
     print(f"Last updated: {last_updated}")
     print("---")
 
+    print("Refresh now | refresh=true")
+    print("---")
+
     script_path = os.path.abspath(__file__)
     print(
         f"Set OpenAI admin key... | bash=\"{script_path}\" param1=--action param2=set_openai_key terminal=false refresh=true"
