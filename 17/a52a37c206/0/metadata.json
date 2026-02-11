@@ -1,0 +1,33 @@
+{
+  "cli_version": "0.4.2",
+  "checkpoint_id": "17a52a37c206",
+  "session_id": "da869b5f-d463-4ae6-ac2d-e31b484177b2",
+  "strategy": "manual-commit",
+  "created_at": "2026-02-11T06:25:20.350925Z",
+  "branch": "main",
+  "checkpoints_count": 2,
+  "files_touched": [
+    ".claude/settings.local.json",
+    "README.md",
+    "bin/tokentotem.py",
+    "docs/config.example.json",
+    "docs/troubleshooting.md"
+  ],
+  "agent": "Claude Code",
+  "token_usage": {
+    "input_tokens": 37,
+    "cache_creation_tokens": 35828,
+    "cache_read_tokens": 1211786,
+    "output_tokens": 6772,
+    "api_call_count": 31
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-02-11T06:25:20.31869Z",
+    "agent_lines": 18,
+    "human_added": 79,
+    "human_modified": 8,
+    "human_removed": 0,
+    "total_committed": 102,
+    "agent_percentage": 17.647058823529413
+  }
+}

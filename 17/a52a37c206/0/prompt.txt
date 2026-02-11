@@ -1,0 +1,9 @@
+Remove the rate limits feature - it doesn't seem to work well
+
+---
+
+Do no show the OpenAI, Anthropic sections if their API keys have not been set yet
+
+---
+
+commit and push
