@@ -23,7 +23,6 @@ SwiftBar auto-loads the plugin once it is in the Plugins folder you chose. Token
 - Today (UTC) spend
 - Month-to-date (UTC) spend
 - Budget progress and warnings
-- Rate limits (when response headers are available)
 
 ## Requirements
 - macOS
@@ -37,7 +36,6 @@ In the menu, set:
 - Anthropic admin key
 - Monthly budget
 - Warning thresholds
-- (Optional) manual rate limits
 
 ## Where your data lives
 ### Secrets (Keychain)
@@ -53,7 +51,6 @@ In the menu, set:
 - OpenAI can be filtered by project IDs via `providers.openai.project_ids`.
 - Anthropic cost amounts are returned in lowest currency units (cents) and are converted to USD.
 - Daily totals use UTC day boundaries.
-- Rate limits use response headers when available; otherwise manual config is used.
 
 ## Troubleshooting
 See `docs/troubleshooting.md`.

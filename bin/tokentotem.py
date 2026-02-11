@@ -36,17 +36,6 @@ DEFAULT_CONFIG = {
             "enabled": True,
         },
     },
-    "rate_limits": {
-        "openai": {
-            "requests_per_minute": None,
-            "tokens_per_minute": None,
-        },
-        "anthropic": {
-            "requests_per_minute": None,
-            "input_tokens_per_minute": None,
-            "output_tokens_per_minute": None,
-        },
-    },
     "currency": "USD",
 }
 
@@ -219,40 +208,6 @@ def parse_rfc3339(value):
         return None
 
 
-def parse_openai_rate_limits(headers):
-    return {
-        "requests_limit": headers.get("x-ratelimit-limit-requests"),
-        "requests_remaining": headers.get("x-ratelimit-remaining-requests"),
-        "requests_reset": headers.get("x-ratelimit-reset-requests"),
-        "tokens_limit": headers.get("x-ratelimit-limit-tokens"),
-        "tokens_remaining": headers.get("x-ratelimit-remaining-tokens"),
-        "tokens_reset": headers.get("x-ratelimit-reset-tokens"),
-    }
-
-
-def parse_anthropic_rate_limits(headers):
-    return {
-        "requests_limit": headers.get("anthropic-ratelimit-requests-limit"),
-        "requests_remaining": headers.get("anthropic-ratelimit-requests-remaining"),
-        "requests_reset": headers.get("anthropic-ratelimit-requests-reset"),
-        "tokens_limit": headers.get("anthropic-ratelimit-tokens-limit"),
-        "tokens_remaining": headers.get("anthropic-ratelimit-tokens-remaining"),
-        "tokens_reset": headers.get("anthropic-ratelimit-tokens-reset"),
-        "input_tokens_limit": headers.get("anthropic-ratelimit-input-tokens-limit"),
-        "input_tokens_remaining": headers.get(
-            "anthropic-ratelimit-input-tokens-remaining"
-        ),
-        "input_tokens_reset": headers.get("anthropic-ratelimit-input-tokens-reset"),
-        "output_tokens_limit": headers.get("anthropic-ratelimit-output-tokens-limit"),
-        "output_tokens_remaining": headers.get(
-            "anthropic-ratelimit-output-tokens-remaining"
-        ),
-        "output_tokens_reset": headers.get(
-            "anthropic-ratelimit-output-tokens-reset"
-        ),
-    }
-
-
 def fetch_openai_costs(admin_key, start, end, project_ids):
     # OpenAI org cost endpoint returns daily buckets.
     params = {
@@ -271,7 +226,7 @@ def fetch_openai_costs(admin_key, start, end, project_ids):
         "Content-Type": "application/json",
         "User-Agent": USER_AGENT,
     }
-    data, resp_headers = http_get_json(url, headers)
+    data, _resp_headers = http_get_json(url, headers)
     today_date = utc_now().date()
     today = 0.0
     mtd = 0.0
@@ -292,7 +247,6 @@ def fetch_openai_costs(admin_key, start, end, project_ids):
     return {
         "today": today,
         "mtd": mtd,
-        "rate_limits": parse_openai_rate_limits(resp_headers),
     }
 
 
@@ -312,7 +266,7 @@ def fetch_anthropic_costs(admin_key, start, end):
         "anthropic-version": "2023-06-01",
         "User-Agent": USER_AGENT,
     }
-    data, resp_headers = http_get_json(url, headers)
+    data, _resp_headers = http_get_json(url, headers)
     today_date = utc_now().date()
     today = 0.0
     mtd = 0.0
@@ -329,81 +283,11 @@ def fetch_anthropic_costs(admin_key, start, end):
     return {
         "today": today,
         "mtd": mtd,
-        "rate_limits": parse_anthropic_rate_limits(resp_headers),
     }
 
 
 def format_money(value):
     return f"${value:,.2f}"
-
-
-def format_rate_limits_openai(rate_limits, manual):
-    if rate_limits and (rate_limits.get("requests_limit") or rate_limits.get("tokens_limit")):
-        parts = []
-        if rate_limits.get("requests_limit"):
-            parts.append(
-                f"RPM {rate_limits.get('requests_limit')} (rem {rate_limits.get('requests_remaining')})"
-            )
-        if rate_limits.get("tokens_limit"):
-            parts.append(
-                f"TPM {rate_limits.get('tokens_limit')} (rem {rate_limits.get('tokens_remaining')})"
-            )
-        return " | ".join(parts)
-    if manual and (manual.get("requests_per_minute") or manual.get("tokens_per_minute")):
-        parts = []
-        if manual.get("requests_per_minute"):
-            parts.append(f"RPM {manual.get('requests_per_minute')}")
-        if manual.get("tokens_per_minute"):
-            parts.append(f"TPM {manual.get('tokens_per_minute')}")
-        return "Manual: " + " | ".join(parts)
-    return "Not available"
-
-
-def format_rate_limits_anthropic(rate_limits, manual):
-    if rate_limits and (
-        rate_limits.get("requests_limit")
-        or rate_limits.get("input_tokens_limit")
-        or rate_limits.get("output_tokens_limit")
-        or rate_limits.get("tokens_limit")
-    ):
-        parts = []
-        if rate_limits.get("requests_limit"):
-            parts.append(
-                f"RPM {rate_limits.get('requests_limit')} (rem {rate_limits.get('requests_remaining')})"
-            )
-        if rate_limits.get("input_tokens_limit"):
-            parts.append(
-                "ITPM {} (rem {})".format(
-                    rate_limits.get("input_tokens_limit"),
-                    rate_limits.get("input_tokens_remaining"),
-                )
-            )
-        if rate_limits.get("output_tokens_limit"):
-            parts.append(
-                "OTPM {} (rem {})".format(
-                    rate_limits.get("output_tokens_limit"),
-                    rate_limits.get("output_tokens_remaining"),
-                )
-            )
-        if rate_limits.get("tokens_limit"):
-            parts.append(
-                f"TPM {rate_limits.get('tokens_limit')} (rem {rate_limits.get('tokens_remaining')})"
-            )
-        return " | ".join(parts)
-    if manual and (
-        manual.get("requests_per_minute")
-        or manual.get("input_tokens_per_minute")
-        or manual.get("output_tokens_per_minute")
-    ):
-        parts = []
-        if manual.get("requests_per_minute"):
-            parts.append(f"RPM {manual.get('requests_per_minute')}")
-        if manual.get("input_tokens_per_minute"):
-            parts.append(f"ITPM {manual.get('input_tokens_per_minute')}")
-        if manual.get("output_tokens_per_minute"):
-            parts.append(f"OTPM {manual.get('output_tokens_per_minute')}")
-        return "Manual: " + " | ".join(parts)
-    return "Not available"
 
 
 def update_budget_notifications(total_mtd, config, cache):
@@ -480,24 +364,6 @@ def set_anthropic_key():
         keychain_set(SERVICE_ANTHROPIC, ACCOUNT_ANTHROPIC, value)
 
 
-def set_openai_rate_limits(config):
-    rpm = osascript_text("OpenAI RPM (blank to clear)", APP_NAME, "")
-    tpm = osascript_text("OpenAI TPM (blank to clear)", APP_NAME, "")
-    config["rate_limits"]["openai"]["requests_per_minute"] = rpm or None
-    config["rate_limits"]["openai"]["tokens_per_minute"] = tpm or None
-    save_config(config)
-
-
-def set_anthropic_rate_limits(config):
-    rpm = osascript_text("Anthropic RPM (blank to clear)", APP_NAME, "")
-    itpm = osascript_text("Anthropic input TPM (blank to clear)", APP_NAME, "")
-    otpm = osascript_text("Anthropic output TPM (blank to clear)", APP_NAME, "")
-    config["rate_limits"]["anthropic"]["requests_per_minute"] = rpm or None
-    config["rate_limits"]["anthropic"]["input_tokens_per_minute"] = itpm or None
-    config["rate_limits"]["anthropic"]["output_tokens_per_minute"] = otpm or None
-    save_config(config)
-
-
 def open_config_file():
     ensure_dirs()
     if not os.path.exists(CONFIG_PATH):
@@ -518,30 +384,24 @@ def render_menu():
     provider_results = {}
     errors = {}
 
-    if config["providers"]["openai"]["enabled"]:
-        if openai_key:
-            try:
-                provider_results["openai"] = fetch_openai_costs(
-                    openai_key,
-                    start,
-                    now,
-                    config["providers"]["openai"].get("project_ids"),
-                )
-            except FetchError as exc:
-                errors["openai"] = str(exc)
-        else:
-            errors["openai"] = "Missing admin key"
+    if config["providers"]["openai"]["enabled"] and openai_key:
+        try:
+            provider_results["openai"] = fetch_openai_costs(
+                openai_key,
+                start,
+                now,
+                config["providers"]["openai"].get("project_ids"),
+            )
+        except FetchError as exc:
+            errors["openai"] = str(exc)
 
-    if config["providers"]["anthropic"]["enabled"]:
-        if anthropic_key:
-            try:
-                provider_results["anthropic"] = fetch_anthropic_costs(
-                    anthropic_key, start, now
-                )
-            except FetchError as exc:
-                errors["anthropic"] = str(exc)
-        else:
-            errors["anthropic"] = "Missing admin key"
+    if config["providers"]["anthropic"]["enabled"] and anthropic_key:
+        try:
+            provider_results["anthropic"] = fetch_anthropic_costs(
+                anthropic_key, start, now
+            )
+        except FetchError as exc:
+            errors["anthropic"] = str(exc)
 
     if errors and cache.get("providers"):
         for provider, err in errors.items():
@@ -555,7 +415,6 @@ def render_menu():
             provider_results[provider] = {
                 "today": 0.0,
                 "mtd": 0.0,
-                "rate_limits": None,
                 "error": err,
             }
 
@@ -574,16 +433,6 @@ def render_menu():
         print(f"{provider_title}")
         print(f"Today (UTC): {format_money(result.get('today', 0.0))}")
         print(f"Month-to-date (UTC): {format_money(result.get('mtd', 0.0))}")
-        rate_limits = result.get("rate_limits")
-        if provider == "openai":
-            rate_line = format_rate_limits_openai(
-                rate_limits, config["rate_limits"]["openai"]
-            )
-        else:
-            rate_line = format_rate_limits_anthropic(
-                rate_limits, config["rate_limits"]["anthropic"]
-            )
-        print(f"Rate limits: {rate_line}")
         print("Scope: Org-wide spend (provider cost APIs are org-level)")
         if result.get("stale"):
             print("Status: Stale (using cached data)")
@@ -620,12 +469,6 @@ def render_menu():
         f"Set warning thresholds... | bash=\"{script_path}\" param1=--action param2=set_thresholds terminal=false refresh=true"
     )
     print(
-        f"Set OpenAI manual rate limits... | bash=\"{script_path}\" param1=--action param2=set_openai_rate_limits terminal=false refresh=true"
-    )
-    print(
-        f"Set Anthropic manual rate limits... | bash=\"{script_path}\" param1=--action param2=set_anthropic_rate_limits terminal=false refresh=true"
-    )
-    print(
         f"Open config file... | bash=\"{script_path}\" param1=--action param2=open_config terminal=false refresh=false"
     )
 
@@ -645,10 +488,6 @@ def handle_action(action):
         set_budget(config)
     elif action == "set_thresholds":
         set_thresholds(config)
-    elif action == "set_openai_rate_limits":
-        set_openai_rate_limits(config)
-    elif action == "set_anthropic_rate_limits":
-        set_anthropic_rate_limits(config)
     elif action == "open_config":
         open_config_file()
 
