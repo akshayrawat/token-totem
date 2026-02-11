@@ -10,4 +10,4 @@ Your admin key may not have access to billing endpoints, or the key may be expir
 The latest request failed, so TokenTotem is showing cached values. Check your network connection or API status, then refresh.
 
 ## The menu bar title shows $0.00
-If your account has no usage for the current UTC day or month, totals will show 0.00. Also confirm you are in the correct org/account.
+If your account has no usage for the current local day or month, totals will show 0.00. Also confirm you are in the correct org/account.

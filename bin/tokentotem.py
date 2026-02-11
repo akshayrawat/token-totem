@@ -178,14 +178,6 @@ def http_get_json(url, headers):
         raise FetchError(str(err)) from err
 
 
-def utc_now():
-    return dt.datetime.now(dt.timezone.utc)
-
-
-def month_start_utc(now):
-    return now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
-
-
 def to_rfc3339(ts):
     return ts.astimezone(dt.timezone.utc).isoformat().replace("+00:00", "Z")
 
@@ -227,7 +219,7 @@ def fetch_openai_costs(admin_key, start, end, project_ids):
         "User-Agent": USER_AGENT,
     }
     data, _resp_headers = http_get_json(url, headers)
-    today_date = utc_now().date()
+    today_date = dt.datetime.now().astimezone().date()
     today = 0.0
     mtd = 0.0
     for bucket in data.get("data", []):
@@ -241,7 +233,7 @@ def fetch_openai_costs(admin_key, start, end, project_ids):
             continue
         bucket_date = dt.datetime.fromtimestamp(
             start_time, tz=dt.timezone.utc
-        ).date()
+        ).astimezone().date()
         if bucket_date == today_date:
             today += bucket_total
     return {
@@ -267,7 +259,7 @@ def fetch_anthropic_costs(admin_key, start, end):
         "User-Agent": USER_AGENT,
     }
     data, _resp_headers = http_get_json(url, headers)
-    today_date = utc_now().date()
+    today_date = dt.datetime.now().astimezone().date()
     today = 0.0
     mtd = 0.0
     for bucket in data.get("data", []):
@@ -278,7 +270,7 @@ def fetch_anthropic_costs(admin_key, start, end):
             bucket_total += amount / 100.0
         mtd += bucket_total
         start_at = parse_rfc3339(bucket.get("starting_at"))
-        if start_at and start_at.date() == today_date:
+        if start_at and start_at.astimezone().date() == today_date:
             today += bucket_total
     return {
         "today": today,
@@ -375,8 +367,8 @@ def render_menu():
     # Main SwiftBar output: title line + menu items.
     config = load_config()
     cache = load_cache()
-    now = utc_now()
-    start = month_start_utc(now)
+    now = dt.datetime.now().astimezone()
+    start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
 
     openai_key = keychain_get(SERVICE_OPENAI, ACCOUNT_OPENAI)
     anthropic_key = keychain_get(SERVICE_ANTHROPIC, ACCOUNT_ANTHROPIC)
@@ -431,8 +423,8 @@ def render_menu():
         result = provider_results[provider]
         provider_title = "OpenAI" if provider == "openai" else "Anthropic"
         print(f"{provider_title}")
-        print(f"Today (UTC): {format_money(result.get('today', 0.0))}")
-        print(f"Month-to-date (UTC): {format_money(result.get('mtd', 0.0))}")
+        print(f"Today (Local): {format_money(result.get('today', 0.0))}")
+        print(f"Month-to-date (Local): {format_money(result.get('mtd', 0.0))}")
         print("Scope: Org-wide spend (provider cost APIs are org-level)")
         if result.get("stale"):
             print("Status: Stale (using cached data)")

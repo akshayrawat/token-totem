@@ -20,8 +20,8 @@ Screenshot updated: 2026-02-06
 SwiftBar auto-loads the plugin once it is in the Plugins folder you chose. TokenTotem relies on the in-menu "Refresh now" action (no filename-based interval).
 
 ## What you get
-- Today (UTC) spend
-- Month-to-date (UTC) spend
+- Today spend
+- Month-to-date spend
 - Budget progress and warnings
 
 ## Requirements
@@ -50,7 +50,7 @@ In the menu, set:
 - Provider cost APIs are org-level (not per-API-key).
 - OpenAI can be filtered by project IDs via `providers.openai.project_ids`.
 - Anthropic cost amounts are returned in lowest currency units (cents) and are converted to USD.
-- Daily totals use UTC day boundaries.
+- Daily totals use local day boundaries.
 
 ## Troubleshooting
 See `docs/troubleshooting.md`.
